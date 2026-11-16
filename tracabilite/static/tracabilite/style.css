@@ -1,0 +1,161 @@
+:root {
+  --fond: #f6f5f2;
+  --surface: #ffffff;
+  --bordure: #e2ded6;
+  --texte: #1f2328;
+  --texte-doux: #5d636b;
+  --accent: #2f6b4f;
+  --accent-leger: #e5f0ea;
+  --danger: #b3261e;
+  --danger-fond: #fdecea;
+  --matiere: #8a5a00;
+  --matiere-fond: #fff2d6;
+  --intermediaire: #2c5aa0;
+  --intermediaire-fond: #e3ecfa;
+  --fini: #2f6b4f;
+  --fini-fond: #e5f0ea;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  background: var(--fond);
+  color: var(--texte);
+}
+
+a { color: var(--accent); }
+
+.entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 14px clamp(16px, 4vw, 40px);
+  background: var(--surface);
+  border-bottom: 1px solid var(--bordure);
+}
+
+.marque { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+.marque strong { display: block; }
+.marque small { color: var(--texte-doux); }
+.logo {
+  display: grid; place-items: center; width: 36px; height: 36px;
+  border-radius: 8px; background: var(--accent); color: #fff; font-size: 1.2rem;
+}
+
+nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+nav a, .lien {
+  padding: 8px 12px; border-radius: 6px; color: var(--texte-doux);
+  text-decoration: none; font-weight: 500;
+}
+nav a:hover, .lien:hover { background: var(--fond); color: var(--texte); }
+.deconnexion { margin: 0; }
+.lien { background: none; border: none; font: inherit; cursor: pointer; }
+
+main { max-width: 1100px; margin: 0 auto; padding: 28px clamp(16px, 4vw, 40px) 60px; }
+
+h1 { font-size: 1.5rem; margin: 0 0 4px; }
+h2 { font-size: 1.1rem; margin: 0 0 12px; }
+.sous-titre { margin: 0 0 24px; color: var(--texte-doux); }
+.discret { color: var(--texte-doux); font-size: 0.9rem; }
+.invisible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.carte {
+  background: var(--surface); border: 1px solid var(--bordure);
+  border-radius: 10px; padding: 20px; margin-bottom: 20px;
+}
+
+.grille-deux {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px; align-items: start;
+}
+.grille-deux .carte { margin-bottom: 0; }
+.grille-deux + .carte, .carte + .grille-deux { margin-top: 20px; }
+
+.titre { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: start; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.actions form { margin: 0; }
+
+.recherche { display: flex; gap: 8px; margin-bottom: 24px; max-width: 560px; }
+
+input, select, textarea {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--bordure);
+  border-radius: 6px; font: inherit; background: #fff; color: inherit;
+}
+input[type="radio"] { width: auto; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+button, .bouton {
+  display: inline-block; font: inherit; font-weight: 600; padding: 9px 16px;
+  border-radius: 6px; border: 1px solid var(--accent); background: var(--accent);
+  color: #fff; cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+button.secondaire { background: #fff; color: var(--accent); }
+button.danger { background: var(--danger); border-color: var(--danger); }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+thead th { font-size: 0.85rem; color: var(--texte-doux); font-weight: 600; }
+.nombre { text-align: right; font-variant-numeric: tabular-nums; }
+.defilement { overflow-x: auto; }
+
+.liste { margin: 0; padding-left: 18px; }
+.liste li { margin-bottom: 6px; }
+
+.chiffres {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px; margin: 0 0 8px;
+}
+.chiffres div { background: var(--fond); border-radius: 8px; padding: 10px 12px; }
+.chiffres dt { font-size: 0.8rem; color: var(--texte-doux); }
+.chiffres dd { margin: 0; font-size: 1.5rem; font-weight: 700; }
+
+.arbre, .arbre ul { list-style: none; margin: 0; padding-left: 0; }
+.arbre ul { padding-left: 22px; border-left: 2px solid var(--bordure); margin-left: 6px; }
+.arbre li { padding: 4px 0; }
+
+.badge {
+  display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 1px 7px;
+  border-radius: 10px; margin-right: 4px;
+}
+.badge-matiere { color: var(--matiere); background: var(--matiere-fond); }
+.badge-intermediaire { color: var(--intermediaire); background: var(--intermediaire-fond); }
+.badge-fini { color: var(--fini); background: var(--fini-fond); }
+
+.etiquette-bloque, .etiquette-ouvert, .etiquette-clos {
+  font-size: 0.8rem; font-weight: 600; padding: 3px 9px; border-radius: 10px; vertical-align: middle;
+}
+.etiquette-bloque, .etiquette-ouvert { color: var(--danger); background: var(--danger-fond); }
+.etiquette-clos { color: var(--texte-doux); background: var(--fond); }
+
+.alerte-zone { border-color: #f0c4c0; }
+.formulaire > div { margin-bottom: 14px; }
+.formulaire label { font-weight: 500; }
+.formulaire ul { list-style: none; padding: 0; margin: 6px 0 0; }
+.formulaire ul label { font-weight: 400; display: flex; gap: 8px; align-items: center; }
+
+.message { padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; }
+.message-success { background: var(--accent-leger); color: var(--accent); }
+
+.courrier {
+  background: #fff; border: 1px solid var(--bordure); border-radius: 4px;
+  padding: 40px; margin-bottom: 24px; max-width: 760px;
+}
+.courrier-entete { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+.destinataire { text-align: right; }
+.date-courrier { text-align: right; }
+.signature { margin-top: 32px; }
+
+@media print {
+  .entete, .ecran-seulement { display: none; }
+  body { background: #fff; }
+  main { padding: 0; max-width: none; }
+  .courrier { border: none; padding: 0; page-break-after: always; }
+}
+
+.code { white-space: nowrap; font-variant-numeric: tabular-nums; }

@@ -1,0 +1,29 @@
+# docker compose up --build -d
+# docker compose exec app python manage.py charger_demo
+# puis http://localhost:8000 (compte « qualite », mot de passe « demo-qualite »)
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: rappels
+      POSTGRES_USER: rappels
+      POSTGRES_PASSWORD: rappels
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rappels -d rappels"]
+      interval: 3s
+      retries: 20
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://rappels:rappels@db:5432/rappels
+      DJANGO_DEBUG: "false"
+      DJANGO_SECRET_KEY: cle-de-demonstration-a-remplacer-en-production
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      # Démonstration en http local : les cookies sécurisés exigeraient https.
+      DJANGO_COOKIES_SECURISES: "false"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy

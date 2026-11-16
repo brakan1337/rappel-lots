@@ -1,0 +1,13 @@
+<li>
+  <span class="badge badge-{{ noeud.lot.article.nature|lower }}">{{ noeud.lot.article.get_nature_display }}</span>
+  <a href="{% url 'tracabilite:lot' noeud.lot.numero %}">{{ noeud.lot.numero }}</a>
+  {{ noeud.lot.article }}
+  <span class="discret">· {{ noeud.lot.date|date:"d/m" }}{% if noeud.quantite %} · {{ noeud.quantite|floatformat:"-2" }} {{ noeud.unite }} utilisés{% endif %}</span>
+  {% if noeud.enfants %}
+    <ul>
+      {% for enfant in noeud.enfants %}
+        {% include "tracabilite/_noeud.html" with noeud=enfant %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</li>

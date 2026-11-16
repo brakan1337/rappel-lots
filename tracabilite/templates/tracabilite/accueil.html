@@ -1,0 +1,44 @@
+{% extends "tracabilite/base.html" %}
+{% block titre %}Rechercher un lot{% endblock %}
+{% block contenu %}
+<h1>Rechercher un lot</h1>
+<p class="sous-titre">Numéro interne ou numéro de lot du fournisseur : le service qualité retrouve en un instant tout ce que ce lot a touché.</p>
+
+<form method="get" class="recherche" role="search">
+  <label for="q" class="invisible">Numéro de lot</label>
+  <input id="q" name="q" value="{{ recherche }}" placeholder="Ex. : V-2210 ou PF-20261104-BAS" autofocus>
+  <button type="submit">Rechercher</button>
+</form>
+
+{% if recherche %}
+  <section class="carte">
+    <h2>{{ resultats|length }} résultat{{ resultats|length|pluralize }} pour « {{ recherche }} »</h2>
+    {% if resultats %}
+      {% include "tracabilite/_table_lots.html" with lots=resultats %}
+    {% else %}
+      <p>Aucun lot ne correspond.</p>
+    {% endif %}
+  </section>
+{% endif %}
+
+<div class="grille-deux">
+  <section class="carte">
+    <h2>Rappels en cours</h2>
+    {% if rappels_ouverts %}
+      <ul class="liste">
+        {% for r in rappels_ouverts %}
+          <li><a href="{% url 'tracabilite:rappel' r.numero %}">{{ r.numero }}</a> · {{ r.lot_origine.article }} ({{ r.lot_origine }}) · {{ r.nb_lots }} lots bloqués</li>
+        {% endfor %}
+      </ul>
+      <p class="discret">{{ nb_lots_bloques }} lot{{ nb_lots_bloques|pluralize }} bloqué{{ nb_lots_bloques|pluralize }} au total.</p>
+    {% else %}
+      <p>Aucun rappel en cours.</p>
+    {% endif %}
+  </section>
+
+  <section class="carte">
+    <h2>Dernières réceptions</h2>
+    {% include "tracabilite/_table_lots.html" with lots=derniers_lots_matiere %}
+  </section>
+</div>
+{% endblock %}

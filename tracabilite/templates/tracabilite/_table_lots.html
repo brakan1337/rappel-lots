@@ -1,0 +1,17 @@
+<div class="defilement">
+<table>
+  <thead>
+    <tr><th scope="col">Lot</th><th scope="col">Article</th><th scope="col">Date</th><th scope="col">Origine</th></tr>
+  </thead>
+  <tbody>
+    {% for lot in lots %}
+      <tr>
+        <td class="code"><a href="{% url 'tracabilite:lot' lot.numero %}">{{ lot.numero }}</a></td>
+        <td>{{ lot.article }}</td>
+        <td>{{ lot.date|date:"d/m/Y" }}</td>
+        <td>{% if lot.fournisseur %}{{ lot.fournisseur }} · {{ lot.numero_fournisseur }}{% else %}Fabriqué sur place{% endif %}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,33 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Rappels de lots{% endblock %} · Traçabilité</title>
+  <link rel="stylesheet" href="{% static 'tracabilite/style.css' %}">
+</head>
+<body>
+  <header class="entete">
+    <a class="marque" href="{% url 'tracabilite:accueil' %}">
+      <span class="logo" aria-hidden="true">⟲</span>
+      <span><strong>Traçabilité</strong><small>Cuisine centrale fictive, plats cuisinés</small></span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <a href="{% url 'tracabilite:accueil' %}">Rechercher un lot</a>
+      <a href="{% url 'tracabilite:rappels' %}">Rappels</a>
+      <a href="{% url 'admin:index' %}">Back-office</a>
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'admin:logout' %}" class="deconnexion">
+          {% csrf_token %}<button type="submit" class="lien">Déconnexion ({{ user.username }})</button>
+        </form>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% for message in messages %}
+      <div class="message message-{{ message.tags }}" role="status">{{ message }}</div>
+    {% endfor %}
+    {% block contenu %}{% endblock %}
+  </main>
+</body>
+</html>

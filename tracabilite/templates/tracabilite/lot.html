@@ -1,0 +1,71 @@
+{% extends "tracabilite/base.html" %}
+{% block titre %}Lot {{ lot.numero }}{% endblock %}
+{% block contenu %}
+<div class="titre">
+  <div>
+    <h1>Lot {{ lot.numero }} {% if lot.est_bloque %}<span class="etiquette-bloque">Bloqué</span>{% endif %}</h1>
+    <p class="sous-titre">
+      {{ lot.article }} · {{ lot.article.get_nature_display|lower }} ·
+      {% if lot.fournisseur %}reçu de {{ lot.fournisseur }} le {{ lot.date|date:"d/m/Y" }} (lot fournisseur {{ lot.numero_fournisseur }})
+      {% else %}fabriqué le {{ lot.date|date:"d/m/Y" }}{% endif %}
+      · DLC {{ lot.dlc|date:"d/m/Y" }} · {{ lot.quantite|floatformat:"-2" }} {{ lot.article.get_unite_display }}
+    </p>
+  </div>
+</div>
+
+<section class="carte impact">
+  <h2>Si ce lot était rappelé</h2>
+  <dl class="chiffres">
+    <div><dt>Lots à bloquer</dt><dd>{{ impact.lots_a_bloquer|length }}</dd></div>
+    <div><dt>Lots de produits finis</dt><dd>{{ impact.lots_finis|length }}</dd></div>
+    <div><dt>Clients à prévenir</dt><dd>{{ impact.clients|length }}</dd></div>
+    <div><dt>Unités déjà livrées</dt><dd>{{ impact.quantite_expediee|floatformat:"0" }}</dd></div>
+    <div><dt>Unités encore à l'usine</dt><dd>{{ impact.quantite_en_stock|floatformat:"0" }}</dd></div>
+  </dl>
+  {% if impact.clients %}
+    <p class="discret">Clients : {% for c in impact.clients %}{{ c.nom }}{% if not forloop.last %}, {% endif %}{% endfor %}.</p>
+  {% endif %}
+</section>
+
+<div class="grille-deux">
+  <section class="carte">
+    <h2>En aval : ce qu'il a servi à fabriquer</h2>
+    {% if aval.enfants %}
+      <ul class="arbre">{% for noeud in aval.enfants %}{% include "tracabilite/_noeud.html" %}{% endfor %}</ul>
+    {% else %}
+      <p class="discret">Ce lot n'est entré dans aucune fabrication.</p>
+    {% endif %}
+  </section>
+  <section class="carte">
+    <h2>En amont : ce qui le compose</h2>
+    {% if amont.enfants %}
+      <ul class="arbre">{% for noeud in amont.enfants %}{% include "tracabilite/_noeud.html" %}{% endfor %}</ul>
+    {% else %}
+      <p class="discret">Matière première : la chaîne s'arrête au fournisseur.</p>
+    {% endif %}
+  </section>
+</div>
+
+{% if rappels %}
+  <section class="carte">
+    <h2>Rappels qui concernent ce lot</h2>
+    <ul class="liste">
+      {% for r in rappels %}
+        <li><a href="{% url 'tracabilite:rappel' r.numero %}">{{ r.numero }}</a> · {{ r.get_statut_display }} · {{ r.cree_le|date:"d/m/Y" }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
+{% if peut_rappeler and not lot.est_bloque %}
+  <section class="carte alerte-zone">
+    <h2>Lancer un rappel sur ce lot</h2>
+    <p>Le lot et les {{ impact.aval|length }} lots qui en descendent seront bloqués immédiatement : plus aucune expédition possible.</p>
+    <form method="post" class="formulaire">
+      {% csrf_token %}
+      {{ formulaire.as_div }}
+      <button type="submit" class="danger">Lancer le rappel</button>
+    </form>
+  </section>
+{% endif %}
+{% endblock %}

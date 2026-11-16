@@ -1,0 +1,62 @@
+{% extends "tracabilite/base.html" %}
+{% block titre %}Rappel {{ rappel.numero }}{% endblock %}
+{% block contenu %}
+<div class="titre">
+  <div>
+    <h1>Rappel {{ rappel.numero }} <span class="etiquette-{{ rappel.statut|lower }}">{{ rappel.get_statut_display }}</span></h1>
+    <p class="sous-titre">
+      Lancé le {{ rappel.cree_le|date:"d/m/Y à H:i" }}{% if rappel.cree_par %} par {{ rappel.cree_par }}{% endif %}
+      sur le lot <a href="{% url 'tracabilite:lot' rappel.lot_origine.numero %}">{{ rappel.lot_origine }}</a> ({{ rappel.lot_origine.article }}).
+      {% if rappel.clos_le %}Clos le {{ rappel.clos_le|date:"d/m/Y à H:i" }}.{% endif %}
+    </p>
+  </div>
+  <div class="actions">
+    <a class="bouton" href="{% url 'tracabilite:courriers' rappel.numero %}">Courriers aux clients</a>
+    {% if rappel.statut == "OUVERT" and perms.tracabilite.change_rappel %}
+      <form method="post" action="{% url 'tracabilite:clore' rappel.numero %}">
+        {% csrf_token %}<button type="submit" class="secondaire">Clore le rappel</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<section class="carte">
+  <h2>Motif</h2>
+  <p>{{ rappel.motif|linebreaksbr }}</p>
+  <p class="discret">{{ rappel.get_niveau_display }}.</p>
+</section>
+
+<section class="carte">
+  <h2>Clients à prévenir ({{ clients|length }})</h2>
+  {% if clients %}
+    <div class="defilement">
+      <table>
+        <thead>
+          <tr><th scope="col">Client</th><th scope="col">Livraison</th><th scope="col">Produit</th><th scope="col">Lot</th><th scope="col">DLC</th><th scope="col" class="nombre">Quantité</th></tr>
+        </thead>
+        <tbody>
+          {% for c in clients %}
+            {% for ligne in c.lignes %}
+              <tr>
+                {% if forloop.first %}<th scope="rowgroup" rowspan="{{ c.lignes|length }}">{{ c.nom }}<br><span class="discret">{{ c.ville }}</span></th>{% endif %}
+                <td><span class="code">{{ ligne.expedition.date|date:"d/m/Y" }}</span><br><span class="code discret">{{ ligne.expedition }}</span></td>
+                <td>{{ ligne.lot.article }}</td>
+                <td class="code">{{ ligne.lot }}</td>
+                <td>{{ ligne.lot.dlc|date:"d/m/Y" }}</td>
+                <td class="nombre">{{ ligne.quantite|floatformat:"0" }}</td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>Aucun produit concerné n'a quitté l'usine.</p>
+  {% endif %}
+</section>
+
+<section class="carte">
+  <h2>Lots bloqués ({{ lots|length }})</h2>
+  {% include "tracabilite/_table_lots.html" with lots=lots %}
+</section>
+{% endblock %}

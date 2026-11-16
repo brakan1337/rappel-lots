@@ -1,0 +1,61 @@
+{% extends "tracabilite/base.html" %}
+{% block titre %}Courriers · {{ rappel.numero }}{% endblock %}
+{% block contenu %}
+<div class="titre ecran-seulement">
+  <div>
+    <h1>Courriers du rappel {{ rappel.numero }}</h1>
+    <p class="sous-titre">Un courrier par client, prêt à imprimer ou à enregistrer en PDF.</p>
+  </div>
+  <div class="actions">
+    <button type="button" onclick="window.print()">Imprimer</button>
+    <a href="{% url 'tracabilite:rappel' rappel.numero %}">Retour au rappel</a>
+  </div>
+</div>
+
+{% for c in clients %}
+  <article class="courrier">
+    <header class="courrier-entete">
+      <div>
+        <strong>Cuisine centrale (entreprise fictive)</strong><br>
+        Service qualité
+      </div>
+      <div class="destinataire">
+        <strong>{{ c.nom }}</strong><br>
+        {% if c.adresse %}{{ c.adresse }}<br>{% endif %}{{ c.ville }}
+      </div>
+    </header>
+    <p class="date-courrier">Le {{ date_courrier|date:"j F Y" }}</p>
+    <p><strong>Objet : {% if rappel.niveau == "RAPPEL" %}rappel{% else %}retrait{% endif %} de produits, référence {{ rappel.numero }}</strong></p>
+    <p>Madame, Monsieur,</p>
+    <p>Par mesure de précaution, nous procédons au {% if rappel.niveau == "RAPPEL" %}rappel{% else %}retrait{% endif %} des produits ci-dessous, que vous avez reçus de notre part.</p>
+    <p>Motif : {{ rappel.motif }}</p>
+    <table>
+      <thead>
+        <tr><th scope="col">Produit</th><th scope="col">Lot</th><th scope="col">DLC</th><th scope="col">Livré le</th><th scope="col" class="nombre">Quantité</th></tr>
+      </thead>
+      <tbody>
+        {% for ligne in c.lignes %}
+          <tr>
+            <td>{{ ligne.lot.article }}</td>
+            <td class="code">{{ ligne.lot }}</td>
+            <td>{{ ligne.lot.dlc|date:"d/m/Y" }}</td>
+            <td>{{ ligne.expedition.date|date:"d/m/Y" }}</td>
+            <td class="nombre">{{ ligne.quantite|floatformat:"0" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Nous vous demandons de :</p>
+    <ul>
+      <li>retirer immédiatement ces produits de la vente et de vos stocks ;</li>
+      <li>les isoler sans les détruire, jusqu'à leur reprise par nos soins ;</li>
+      {% if rappel.niveau == "RAPPEL" %}<li>afficher en magasin l'avis de rappel destiné aux consommateurs ;</li>{% endif %}
+      <li>nous confirmer par retour les quantités retirées.</li>
+    </ul>
+    <p>Nous vous prions de nous excuser pour ce désagrément et restons à votre disposition.</p>
+    <p class="signature">Le service qualité</p>
+  </article>
+{% empty %}
+  <p class="carte">Aucun client n'a reçu les produits concernés : aucun courrier à envoyer.</p>
+{% endfor %}
+{% endblock %}

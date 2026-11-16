@@ -1,0 +1,31 @@
+{% extends "tracabilite/base.html" %}
+{% block titre %}Rappels{% endblock %}
+{% block contenu %}
+<h1>Rappels</h1>
+<p class="sous-titre">Un rappel se lance depuis la fiche du lot en cause.</p>
+<section class="carte">
+  {% if rappels %}
+    <div class="defilement">
+      <table>
+        <thead>
+          <tr><th scope="col">Numéro</th><th scope="col">Lot d'origine</th><th scope="col">Niveau</th><th scope="col">Statut</th><th scope="col">Lancé le</th><th scope="col" class="nombre">Lots bloqués</th></tr>
+        </thead>
+        <tbody>
+          {% for r in rappels %}
+            <tr>
+              <td><a href="{% url 'tracabilite:rappel' r.numero %}">{{ r.numero }}</a></td>
+              <td>{{ r.lot_origine }} · {{ r.lot_origine.article }}</td>
+              <td>{{ r.get_niveau_display|truncatewords:1 }}</td>
+              <td>{{ r.get_statut_display }}</td>
+              <td>{{ r.cree_le|date:"d/m/Y H:i" }}</td>
+              <td class="nombre">{{ r.nb_lots }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>Aucun rappel pour l'instant. Cherchez un lot pour en lancer un.</p>
+  {% endif %}
+</section>
+{% endblock %}

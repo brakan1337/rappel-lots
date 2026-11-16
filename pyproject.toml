@@ -1,0 +1,19 @@
+[project]
+name = "rappel-lots"
+version = "1.0.0"
+description = "Traçabilité et rappel de lots alimentaires pour une cuisine centrale (cas d'étude fictif)"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "DJ"]
+ignore = ["E741"]
